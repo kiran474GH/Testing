@@ -1,0 +1,60 @@
+##############################################################################################################
+## Ideal Setting Chip High Fanout Net for bef Place  @RX71M
+##############################################################################################################
+set hfn_ideal_list ""
+#set hfn_ideal_list [concat ${hfn_ideal_list} "${syspf_hier_inst}sytst/sy2dft/sy_urampge_m2" ]
+##High Fanout Net
+set hfn_ideal_list [concat ${hfn_ideal_list} "cspf/sy_stmrab_a" ]
+set hfn_ideal_list [concat ${hfn_ideal_list} "stbys_m_pt" ]
+set hfn_ideal_list [concat ${hfn_ideal_list} "sy_stm_a" ]
+
+##SCANEN-ICG
+set hfn_ideal_list [concat ${hfn_ideal_list} "${syspf_hier_inst}cpg/cgtree/cgsengentttr/iDFFQEM/Q_ICG"]
+set hfn_ideal_list [concat ${hfn_ideal_list} "pericore/mp200/rtc/rtccalw/rtcluv/mark_scane/z_v" ]
+##SCANEN-FF
+set hfn_ideal_list [concat ${hfn_ideal_list} "${syspf_hier_inst}cpg/cgtree/cg_sengen_q_*" ]
+
+set EDT_MOD  [get_cells -quiet -hierarchical -filter "ref_name==chip_edt"]
+if { [sizeof_collection ${EDT_MOD}] != 0 } {
+    #set hfn_ideal_list [concat ${hfn_ideal_list} "MB_Circ/MB_HFCTS_BUF_0_hf_buf/out_selmo" ]
+} else {
+    #for SCAAP
+    set hfn_ideal_list [concat ${hfn_ideal_list} "${syspf_hier_inst}cpg/atom/TT_TR" ]
+    set hfn_ideal_list [concat ${hfn_ideal_list} "${syspf_hier_inst}sy_daxs_a" ]
+    set hfn_ideal_list [concat ${hfn_ideal_list} "${syspf_hier_inst}sy_scanac_a" ]
+    set hfn_ideal_list [concat ${hfn_ideal_list} "${syspf_hier_inst}sy_scanbi_a" ]
+    set hfn_ideal_list [concat ${hfn_ideal_list} "${syspf_hier_inst}sy_scanbi_a" ]
+    set hfn_ideal_list [concat ${hfn_ideal_list} "${syspf_hier_inst}sy_srams2_a" ]
+    set hfn_ideal_list [concat ${hfn_ideal_list} "${syspf_hier_inst}sy_tapcact_a" ]
+    set hfn_ideal_list [concat ${hfn_ideal_list} "${syspf_hier_inst}sy_tmrab_a" ]
+    set hfn_ideal_list [concat ${hfn_ideal_list} "${syspf_hier_inst}sy_tmrab_a" ]
+    set hfn_ideal_list [concat ${hfn_ideal_list} "cspf/sy_stm_a" ]
+    set hfn_ideal_list [concat ${hfn_ideal_list} "cspf/sy_stmrab_a" ]
+}
+
+
+##RESET
+set hfn_ideal_list [concat ${hfn_ideal_list} "cspf/rst_n_reg" ]
+set hfn_ideal_list [concat ${hfn_ideal_list} "rst_m*_reg" ]
+set hfn_ideal_list [concat ${hfn_ideal_list} "rstas_pt" ]
+set hfn_ideal_list [concat ${hfn_ideal_list} "cspf/rstcpu_reg_n" ]
+set hfn_ideal_list [concat ${hfn_ideal_list} "cspf/rstfl_ofs_n" ]
+set hfn_ideal_list [concat ${hfn_ideal_list} "cspf/rst_f_n_reg" ]
+set hfn_ideal_list [concat ${hfn_ideal_list} "cspf/bpm/fls/flbss_sy_rst" ]
+set hfn_ideal_list [concat ${hfn_ideal_list} "pericore/mp200/etr/sreset0" ]
+#set hfn_ideal_list [concat ${hfn_ideal_list} "pericore/mp200/etr/sreset2" ]
+set hfn_ideal_list [concat ${hfn_ideal_list} "pericore/mp200/etr/PBUSIF/SRST" ]
+set hfn_ideal_list [concat ${hfn_ideal_list} "pericore/mp200/ssif_0/rstgen/rst_sys" ]
+set hfn_ideal_list [concat ${hfn_ideal_list} "rsttmrj_n_reg" ]
+set hfn_ideal_list [concat ${hfn_ideal_list} "rstrtc_m2_reg" ]
+set hfn_ideal_list [concat ${hfn_ideal_list} "cspf/rstcpu_m2_n" ]
+
+
+foreach net_tmp ${hfn_ideal_list} {
+    #echo [get_attribute [get_nets $net_tmp ] full_name ]
+    #set_load -subtract_pin_load 0 [get_nets -segments $net_tmp]
+    echo "set_ideal_network -no_propagate [get_object_name [get_nets -segments ${net_tmp} ]]"
+    set_ideal_network -no_propagate [get_nets -segments ${net_tmp}]
+}
+#jpeg
+#   set_ideal_network -no_propagate [get_nets -of [get_pins -of [get_cells -of [get_pins -of [get_nets  pericore/jpeg/ahbrm/u_usiahjpeg010_w1r13232/rst*] -f "pin_direction==in"] -f "is_hierarchical==false"] -f "pin_direction==out"]]
